@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- index.html v1.5 · Sangha Studios puddle homepage, hat branch, Elizabeth page, order form -->
+<!-- index.html v1.6 · Sangha Studios puddle homepage, hat branch with videos, Elizabeth page, order form -->
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Handmade felted wool sauna hats from Sangha Studios.">
 <meta property="og:title" content="Sangha Studios"><meta property="og:description" content="Step into the puddle."><meta property="og:image" content="https://sanghastudios.com/puddle.jpg">
@@ -107,7 +107,7 @@ textarea{min-height:110px;resize:vertical}
 .next button{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;color:inherit;background:rgba(255,255,255,.25);border:1.5px solid rgba(0,0,0,.18);border-radius:999px;padding:9px 14px;cursor:pointer;font-weight:500}
 
 /* the hat rail */
-.rack{--off:44px;--on:210px;--hh:226px;position:relative;margin:28px -18px 0;padding:0 18px;overflow:hidden}
+.rack{--off:64px;--on:230px;--hh:240px;position:relative;margin:28px -18px 0;padding:0 18px;overflow:hidden}
 .branch{position:absolute;left:0;top:0;width:100%;height:120px;overflow:visible;z-index:3;pointer-events:none;filter:drop-shadow(0 4px 4px rgba(0,0,0,.35))}
 .row{display:flex;justify-content:center;align-items:flex-start;perspective:1100px;height:calc(var(--hh) + 120px);padding-top:92px;position:relative;z-index:1;box-sizing:border-box}
 .hg{flex:none;width:var(--off);height:100%;display:flex;justify-content:center;background:none;border:0;padding:0;cursor:pointer;position:relative;transition:width .6s cubic-bezier(.2,.8,.2,1)}
@@ -137,6 +137,9 @@ textarea{min-height:110px;resize:vertical}
 .dstage{display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,28px);min-height:0;perspective:900px}
 .dhat{flex:none;display:flex;justify-content:center;--hh:min(52vh,420px)}
 .dhat img{transform:none}
+.dvid{position:relative;height:min(64vh,560px);aspect-ratio:9/16;max-width:100%;border-radius:22px;overflow:hidden;box-shadow:0 22px 50px rgba(0,0,0,.4);background:#111}
+.dvid video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.snd{position:absolute;right:10px;bottom:10px;background:rgba(14,9,7,.6);color:#fff6e8;border:1px solid rgba(255,246,232,.5);border-radius:999px;padding:7px 12px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .ghost{flex:none;--hh:min(28vh,220px);opacity:.25;filter:saturate(.4) blur(1px)}
 .ghost img{transform:none}
 .darrow{width:46px;height:46px;flex:none;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:inherit;display:grid;place-items:center;cursor:pointer}
@@ -177,7 +180,7 @@ select{font:inherit;color:var(--pi);background:rgba(255,255,255,.35);border:1.5p
 .social{display:grid;gap:8px;margin-top:14px}
 .social a{color:inherit;font-weight:600;text-underline-offset:3px}
 @media (max-width:760px){.order{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
-@media (max-width:640px){.rack{--off:21px;--on:140px;--hh:156px}.row{padding-top:84px;height:calc(var(--hh) + 108px)}.dhat{--hh:min(46vh,340px)}.ghost{display:none}.hcap{min-height:132px}}
+@media (max-width:640px){.rack{--off:34px;--on:150px;--hh:160px}.row{padding-top:84px;height:calc(var(--hh) + 108px)}.dhat{--hh:min(46vh,340px)}.dvid{height:auto;width:min(60vw,280px)}.dstage{gap:6px}.darrow{width:40px;height:40px}.ghost{display:none}.hcap{min-height:132px}}
 @media (max-width:520px){.lens{display:none!important}#gl{cursor:default}.steps li{grid-template-columns:40px 1fr}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -211,7 +214,7 @@ select{font:inherit;color:var(--pi);background:rgba(255,255,255,.35);border:1.5p
       <svg class="branch" id="branch" aria-hidden="true"></svg>
       <div class="row" id="row" role="listbox" aria-label="Hats on the rail"></div>
     </div>
-    <div class="hcap" aria-live="polite"><div class="hname" id="hname"></div><div class="hsub" id="hsub"></div><button type="button" class="hlook" id="hlook">Take a closer look</button></div>
+    <div class="hcap" aria-live="polite"><div class="hname" id="hname"></div><div class="hsub" id="hsub"></div><button type="button" class="hlook" id="hlook">Watch it turn</button></div>
     <div class="ticker" aria-hidden="true"><div class="tk" id="tk"></div></div>
     <div class="hdetail" id="hdetail" hidden role="dialog" aria-modal="true" aria-labelledby="dname">
       <button type="button" class="dclose" id="dclose" aria-label="Back to the rail"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l10 10M13 3 3 13"/></svg></button>
@@ -533,7 +536,7 @@ $("form").addEventListener("submit",async e=>{
 });
 
 /* ---------- the hat rail ---------- */
-const HATS=[{"n": "Raspberry Tweed", "d": "Raspberry wool flecked with moss and rust, with a scalloped brim and contrast topstitching.", "src": "hats/hat1.webp", "loop": 0.604, "ar": 0.857},{"n": "Linen Garden", "d": "Natural linen hand-embroidered with charcoal vines and blooms.", "src": "hats/hat2.webp", "loop": 0.648, "ar": 0.845},{"n": "Snow Bloom", "d": "Cream wool with tone-on-tone embroidered flowers. You see it more than you notice it.", "src": "hats/hat3.webp", "loop": 0.633, "ar": 0.863},{"n": "Night Garden", "d": "Black wool with a garland of embroidered roses and hearts in pink, red and violet.", "src": "hats/hat4.webp", "loop": 0.653, "ar": 0.754},{"n": "Big Bloom", "d": "Hot pink and cobalt florals, big and loud.", "src": "hats/hat5.webp", "loop": 0.606, "ar": 0.804},{"n": "Moss", "d": "Shaggy olive pile with a coral appliqu\u00e9. The softest one on the branch.", "src": "hats/hat11.webp", "loop": 0.5, "ar": 0.97},{"n": "Harbor Cable", "d": "Navy cable knit with a twisted center braid.", "src": "hats/hat6.webp", "loop": 0.669, "ar": 0.696},{"n": "Camp Blanket \u00b7 Grey Peaks", "d": "Camp-blanket wool with grey peaks and flared brim points.", "src": "hats/hat7.webp", "loop": 0.492, "ar": 0.889},{"n": "Camp Blanket \u00b7 Firebird", "d": "Camp-blanket wool with a firebird across the front.", "src": "hats/hat8.webp", "loop": 0.531, "ar": 0.977},{"n": "Camp Blanket \u00b7 Sage", "d": "Camp-blanket wool in sage, rust and navy bands.", "src": "hats/hat9.webp", "loop": 0.454, "ar": 0.946},{"n": "Charcoal", "d": "Heathered charcoal wool. Plain, quiet and easy to wear.", "src": "hats/hat10.webp", "loop": 0.611, "ar": 0.754}];
+const HATS=[{"n": "The Vihta", "d": "Layered felt leaves with a bundle of twigs on top, after the leafy whisk that's slapped against skin in the heat.", "src": "hats/hat1.webp", "vid": "videos/hat1.mp4", "poster": "videos/hat1.jpg", "loop": 0.488, "ar": 0.604},{"n": "Dusty Rose", "d": "Soft rose wool with a scalloped brim and hand-stitched edge.", "src": "hats/hat2.webp", "vid": "videos/hat2.mp4", "poster": "videos/hat2.jpg", "loop": 0.618, "ar": 0.877},{"n": "Oil Slick", "d": "Iridescent fabric that shifts pink, blue and gold as it turns, like the puddle you just fell into.", "src": "hats/hat3.webp", "vid": "videos/hat3.mp4", "poster": "videos/hat3.jpg", "loop": 0.692, "ar": 0.785},{"n": "Heather Grey", "d": "Speckled grey felt with blanket-stitched brim. The classic sauna hat.", "src": "hats/hat4.webp", "vid": "videos/hat4.mp4", "poster": "videos/hat4.jpg", "loop": 0.525, "ar": 0.95},{"n": "Moss", "d": "Shaggy green pile with a tall loop. The softest hat on the branch.", "src": "hats/hat5.webp", "vid": "videos/hat5.mp4", "poster": "videos/hat5.jpg", "loop": 0.558, "ar": 0.856},{"n": "Charcoal", "d": "Dark charcoal felt with pink blanket stitching and a little tail of thread at the brim.", "src": "hats/hat6.webp", "vid": "videos/hat6.mp4", "poster": "videos/hat6.jpg", "loop": 0.589, "ar": 0.702}];
 let hseq=0;
 const hatIMG=(h,cls="")=>`<img class="${cls}" src="${h.src}" alt="${h.n}" draggable="false" style="--lx:${((0.5-h.loop)*100).toFixed(1)}%;aspect-ratio:${h.ar}">`;
 function hatSVG(h){
@@ -554,7 +557,7 @@ document.body.insertAdjacentHTML("beforeend",`<svg width="0" height="0" style="p
 <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>
 </defs></svg>`);
 
-const row=$("row");let cur=3,lastPtr="mouse";
+const row=$("row");let cur=2,lastPtr="mouse";
 row.innerHTML=HATS.map((h,i)=>`<button type="button" class="hg" role="option" aria-label="${h.n}" data-i="${i}"><div class="sw"><div class="pend">${hatIMG(h)}</div></div></button>`).join("");
 const hgs=[...row.children];
 function setHat(i,sway=true){
@@ -578,21 +581,26 @@ $("tk").textContent=(words.join("   ·   ")+"   ·   ").repeat(4);
 
 const det=$("hdetail");
 function drawDetail(){
-  const h=HATS[cur];$("dhat").innerHTML=hatIMG(h);
+  const h=HATS[cur];$("dhat").innerHTML=h.vid?`<div class="dvid"><video src="${h.vid}" poster="${h.poster}" autoplay muted loop playsinline preload="auto" aria-label="${h.n} turning on a stand"></video><button type="button" class="snd" aria-pressed="false">Sound on</button></div>`:hatIMG(h);
+  const v=$("dhat").querySelector("video");if(v){v.play().catch(()=>{});}
   $("gprev").innerHTML=hatIMG(HATS[(cur+HATS.length-1)%HATS.length]);$("gnext").innerHTML=hatIMG(HATS[(cur+1)%HATS.length]);
   $("dname").textContent=h.n;$("ddesc").textContent=h.d;$("dnum").textContent=`${cur+1} of ${HATS.length} · scroll or swipe for more`;
   det.classList.remove("show");void det.offsetWidth;det.classList.add("show");
 }
 function openDetail(){drawDetail();det.hidden=false;$("dclose").focus({preventScroll:true});}
-function closeDetail(){det.hidden=true;hgs[cur].focus({preventScroll:true});}
+function stopVid(){const v=$("dhat").querySelector("video");if(v)v.pause();}
+function closeDetail(){stopVid();det.hidden=true;hgs[cur].focus({preventScroll:true});}
 $("dclose").onclick=closeDetail;
+$("dhat").addEventListener("click",e=>{const b=e.target.closest(".snd");const v=$("dhat").querySelector("video");if(!v)return;
+  if(b){v.muted=!v.muted;b.textContent=v.muted?"Sound on":"Sound off";b.setAttribute("aria-pressed",String(!v.muted));if(!v.muted)v.play().catch(()=>{});return;}
+  if(v.paused)v.play().catch(()=>{});else v.pause();});
 $("dprev").onclick=()=>{setHat(cur-1,false);drawDetail();};
 $("dnext").onclick=()=>{setHat(cur+1,false);drawDetail();};
 det.addEventListener("keydown",e=>{if(e.key==="ArrowRight")$("dnext").click();if(e.key==="ArrowLeft")$("dprev").click();});
 let dsx=null;det.addEventListener("touchstart",e=>{dsx=e.touches[0].clientX;},{passive:true});
 det.addEventListener("touchend",e=>{if(dsx===null)return;const dx=e.changedTouches[0].clientX-dsx;dsx=null;if(Math.abs(dx)>50)(dx<0?$("dnext"):$("dprev")).click();});
 fillHats();
-$("dask").onclick=()=>{const name=HATS[cur].n;det.hidden=true;surface(()=>{spotFor("hello");setTimeout(()=>{fhat.value=name;},1400);});};
+$("dask").onclick=()=>{const name=HATS[cur].n;stopVid();det.hidden=true;surface(()=>{spotFor("hello");setTimeout(()=>{fhat.value=name;},1400);});};
 
 /* Branch: a real tapering limb with bark, twigs that end in soft Art Nouveau curls, and leaves */
 function drawBranch(){
